@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Start DBus session if not running
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    eval "$(dbus-launch --sh-syntax --exit-with-session)"
+fi
+
+# Ensure local binaries are in PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# Desktop status bar
+~/.local/bin/statusbar.sh &
+
+# Launch DWM
+exec dwm
+

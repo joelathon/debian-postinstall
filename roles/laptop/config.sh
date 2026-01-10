@@ -6,7 +6,7 @@ echo "[+] Applying laptop-specific configuration"
 # -------------------------------
 # Touchpad & TrackPoint configuration
 # -------------------------------
-mkdir -p /etc/X11/xorg.conf.d/
+sudo mkdir -p /etc/X11/xorg.conf.d/
 cat > /etc/X11/xorg.conf.d/40-libinput.conf << 'EOF'
 Section "InputClass"
     Identifier "libinput touchpad"
@@ -49,8 +49,36 @@ ExecStart=/usr/bin/slock
 WantedBy=sleep.target
 EOF
 
-systemctl daemon-reload
-systemctl enable slock-lid-close.service
+sudo systemctl daemon-reload
+sudo systemctl enable slock-lid-close.service
+
+# -------------------------------
+# Laptop status bar and xinitrc
+# -------------------------------
+echo "[+] Installing laptop status bar and xinitrc"
+
+mkdir -p ~/.local/bin
+cp ./scripts/dwm-status-laptop.sh ~/.local/bin/statusbar.sh
+chmod +x ~/.local/bin/statusbar.sh
+
+cp ./scripts/xinitrc-laptop ~/.xinitrc
+chmod +x ~/.xinitrc
+
+# -------------------------------
+# TLP battery thresholds
+# -------------------------------
+echo "[+] Installing TLP configuration"
+
+sudo mkdir -p /etc/tlp
+cat > /etc/tlp.conf << 'EOF'
+START_CHARGE_THRESH_BAT0=75
+STOP_CHARGE_THRESH_BAT0=80
+START_CHARGE_THRESH_BAT1=75
+STOP_CHARGE_THRESH_BAT1=80
+EOF
+
+sudo systemctl enable tlp
+sudo systemctl start tlp
 
 echo "[+] Laptop configuration applied"
 

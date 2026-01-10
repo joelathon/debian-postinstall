@@ -22,6 +22,7 @@ echo "[+] Role: $ROLE"
 # 2. Common packages (includes apt update)
 bash roles/common/packages.sh
 bash roles/common/services.sh
+bash roles/common/config.sh
 
 # 3. CPU detection + microcode (COMMON)
 CPU=$(bash detect/cpu.sh)
