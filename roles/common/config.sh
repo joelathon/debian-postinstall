@@ -3,18 +3,29 @@ set -e
 
 echo "[+] Starting common configuration"
 
-# 1️⃣ Install prebuilt binaries (DWM, ST, dmenu, SLOCK)
+# -------------------------------
+# Ensure user local bin exists
+# -------------------------------
+USER_HOME=$(eval echo ~$USER)
+mkdir -p "$USER_HOME/.local/bin"
+
+# -------------------------------
+# Install prebuilt binaries (DWM, ST, dmenu, SLOCK)
+# -------------------------------
 echo "[+] Installing prebuilt binaries from builds folder"
-mkdir -p /usr/local/bin
 
 for bin in dwm st dmenu slock; do
-    cp ./builds/$bin/$bin /usr/local/bin/$bin
-    chmod +x /usr/local/bin/$bin
+    cp "./builds/$bin/$bin" "$USER_HOME/.local/bin/$bin"
 done
 
-echo "[+] Prebuilt binaries installed"
+# Make all binaries executable
+chmod +x "$USER_HOME/.local/bin/"*
 
-# 2️⃣ (Optional) Any other common configs
+echo "[+] Prebuilt binaries installed to $USER_HOME/.local/bin"
+
+# -------------------------------
+# Optional: other common configs
+# -------------------------------
 # Example: CPU microcode, GPU detection scripts, Wi-Fi firmware setup, etc.
 # Add any shared config steps here
 
