@@ -4,9 +4,15 @@ set -e
 echo "[+] Starting common configuration"
 
 # -------------------------------
-# Ensure user local bin exists
+# Determine the real user home
 # -------------------------------
-USER_HOME=$(eval echo ~$USER)
+TARGET_USER=${SUDO_USER:-$USER}
+USER_HOME=$(eval echo ~$TARGET_USER)
+echo "[+] Installing for user: $TARGET_USER ($USER_HOME)"
+
+# -------------------------------
+# Ensure ~/.local/bin exists
+# -------------------------------
 mkdir -p "$USER_HOME/.local/bin"
 
 # -------------------------------
@@ -18,16 +24,18 @@ for bin in dwm st dmenu slock; do
     cp "./builds/$bin/$bin" "$USER_HOME/.local/bin/$bin"
 done
 
-# Make all binaries executable
+# Make everything executable
 chmod +x "$USER_HOME/.local/bin/"*
+
+# Ensure correct ownership (important if run via sudo)
+chown -R "$TARGET_USER:$TARGET_USER" "$USER_HOME/.local/bin"
 
 echo "[+] Prebuilt binaries installed to $USER_HOME/.local/bin"
 
 # -------------------------------
 # Optional: other common configs
 # -------------------------------
-# Example: CPU microcode, GPU detection scripts, Wi-Fi firmware setup, etc.
-# Add any shared config steps here
+# CPU microcode, GPU detection scripts, Wi-Fi firmware setup, etc.
 
 echo "[+] Common configuration complete"
 
